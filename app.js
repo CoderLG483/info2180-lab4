@@ -1,22 +1,24 @@
 window.addEventListener('DOMContentLoaded', () => {
     const searchBtn = document.querySelector('#search-btn');
+    const searchInput = document.querySelector('#search-input');
+    const resultDiv = document.querySelector('#result');
 
     searchBtn.addEventListener('click', () => {
-        // 1. Send an asynchronous GET request to superheroes.php
-        fetch('superheroes.php')
+        const rawQuery = searchInput.value;
+        const sanitizedQuery = encodeURIComponent(rawQuery.trim());
+
+        fetch(`superheroes.php?query=${sanitizedQuery}`)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    throw new Error('Network error');
                 }
-                // 2. Extract the response body as plain text (since PHP prints HTML tags)
                 return response.text();
             })
             .then(data => {
-                // 3. Display the raw string inside an alert
-                alert(data);
+                resultDiv.innerHTML = data;
             })
             .catch(error => {
-                console.error('Fetch error:', error);
+                console.error(error);
             });
     });
 });
